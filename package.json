@@ -44,7 +44,7 @@
     "photoswipe": "^5.3.4",
     "rxjs": "~6.6.3",
     "tslib": "^2.4.0",
-    "zone.js": "~0.14.10"
+    "zone.js": "~0.13.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.0.5",
@@ -85,6 +85,6 @@
     "tailwindcss": "^3.2.1",
     "ts-loader": "^8.0.4",
     "ts-node": "~9.0.0",
-    "typescript": "~5.5.4"
+    "typescript": "~5.4.4"
   }
 }

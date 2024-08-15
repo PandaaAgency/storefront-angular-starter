@@ -2,14 +2,21 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
+export const environment: {
+    production: boolean
+    apiHost: string
+    apiPort: number,
+    shopApiPath: string
+    baseHref: string
+    tokenMethod: string
+    channelToken ?: string // @see https://docs.vendure.io/guides/storefront/connect-api/#specifying-a-channel
+} = {
     production: false,
     apiHost: 'http://localhost',
     apiPort: 3000,
     shopApiPath: 'shop-api',
     baseHref: '/',
     tokenMethod: 'bearer',
-    channelToken: 'RV',
 };
 
 /*

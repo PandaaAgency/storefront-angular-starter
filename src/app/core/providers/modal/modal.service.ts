@@ -2,7 +2,7 @@ import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { Injectable, Injector, Type } from '@angular/core';
 import { Observable, race } from 'rxjs';
-import { finalize, mapTo, take, tap } from 'rxjs/operators';
+import { finalize, map,  take } from 'rxjs/operators';
 
 import { ModalDialogComponent } from '../../components/modal-dialog/modal-dialog.component';
 
@@ -71,15 +71,17 @@ export class ModalService {
         const modal = overlayRef.attach(portal);
         setTimeout(() => modal.changeDetectorRef.markForCheck());
 
-        const close$ = new Observable<R>(subscriber => {
+        const close$: Observable<R> = new Observable<R>((subscriber) => {
             modal.instance.closeModal = (result: R) => {
                 subscriber.next(result);
                 subscriber.complete();
             };
         });
-        const backdropClick$ = overlayRef.backdropClick().pipe(mapTo(undefined));
 
-        return race<R | undefined>(close$, backdropClick$).pipe(
+        const backdropClick$: Observable<undefined> = overlayRef.backdropClick().pipe(
+            map(() => undefined)
+        );
+        return race(close$, backdropClick$).pipe(
             take(1),
             finalize(() => overlayRef.dispose()),
         );

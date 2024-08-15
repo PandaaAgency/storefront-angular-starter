@@ -9,6 +9,7 @@ import { routes } from './app.routes';
 import { HomePageComponent } from './core/components/home-page/home-page.component';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
     declarations: [
@@ -20,6 +21,7 @@ import { SharedModule } from './shared/shared.module';
         RouterModule.forRoot(routes, { scrollPositionRestoration: 'disabled', initialNavigation: 'enabledBlocking' }),
         CoreModule,
         SharedModule,
+        FontAwesomeModule,
         // Using the service worker appears to break SSR after the initial page load.
         // ServiceWorkerModule.register(`${environment.baseHref}ngsw-worker.js`, {
         //     enabled: environment.production,
@@ -55,7 +57,7 @@ export class AppModule {
         ).subscribe(event => {
             if (this.document?.defaultView) {
                 const parsed = this.urlSerializer.parse(event.urlAfterRedirects);
-                const primaryRoot = parsed.root.children.primary;
+                const primaryRoot = parsed.root.children['primary'];
                 const isFacetFilterNavigation = (primaryRoot?.segments[0]?.path === 'category' &&
                     primaryRoot?.segments[1]?.parameterMap.has('facets'));
 

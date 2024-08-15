@@ -1,5 +1,5 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
@@ -55,13 +55,14 @@ const CORE_COMPONENTS = [
     ],
     exports: [
         ...CORE_COMPONENTS,
-    ], imports: [SharedModule,
+    ], imports: [
+        SharedModule,
         BrowserModule,
         ApolloModule], providers: [
         { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true },
         { provide: APP_BASE_HREF, useValue: environment.baseHref },
         APOLLO_CLIENT_PROVIDER,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withInterceptorsFromDi(), withFetch()),
     ] })
 export class CoreModule {
     constructor(library: FaIconLibrary) {

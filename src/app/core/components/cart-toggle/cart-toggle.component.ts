@@ -42,7 +42,7 @@ export class CartToggleComponent implements OnInit {
             switchMap(() => zip(
                     from([true, false]),
                     timer(0, 1000),
-                    val => val,
+                    (boolValue, _) => boolValue
                 ),
             ),
         );

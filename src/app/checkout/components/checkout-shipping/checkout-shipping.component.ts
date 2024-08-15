@@ -180,7 +180,7 @@ export class CheckoutShippingComponent implements OnInit, OnDestroy {
         return method.id;
     }
 
-    private setCustomerForOrder() {
+    private setCustomerForOrder() : Observable<SetCustomerForOrderMutation | null> {
         if (this.contactForm.valid) {
             return this.dataService.mutate<SetCustomerForOrderMutation, SetCustomerForOrderMutationVariables>(SET_CUSTOMER_FOR_ORDER, {
                 input: this.contactForm.value,
@@ -192,6 +192,8 @@ export class CheckoutShippingComponent implements OnInit, OnDestroy {
                 })
             );
         }
+
+        return of(null)
     }
 
     private valueToAddressInput(value: AddressFormValue | AddressFragment): CreateAddressInput {

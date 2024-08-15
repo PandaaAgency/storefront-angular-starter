@@ -1,9 +1,9 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpHeaders } from '@angular/common/http';
-import { FactoryProvider, Optional, PLATFORM_ID } from '@angular/core';
-import { makeStateKey, TransferState } from '@angular/platform-browser';
-import { ApolloClientOptions, ApolloLink, InMemoryCache } from '@apollo/client/core';
-import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { FactoryProvider, Optional, PLATFORM_ID, makeStateKey, TransferState } from '@angular/core';
+
+import { ApolloClientOptions, ApolloLink, from, InMemoryCache } from '@apollo/client/core';
+import { REQUEST } from '../../express.tokens';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink, Options } from 'apollo-angular/http';
 import { Request } from 'express';
@@ -112,7 +112,7 @@ export function apolloOptionsFactory(
     const afterware = new ApolloLink((operation, forward) => {
         return forward(operation).map((response) => {
             const context = operation.getContext();
-            const authHeader = context.response.headers.get('vendure-auth-token');
+            const authHeader = context['response'].headers.get('vendure-auth-token');
             if (authHeader && isPlatformBrowser(platformId)) {
                 // If the auth token has been returned by the Vendure
                 // server, we store it in localStorage
@@ -122,14 +122,24 @@ export function apolloOptionsFactory(
         });
     });
     const middleware = new ApolloLink((operation, forward) => {
+        const customHeaders : Record<string,string>={}
         if (isPlatformBrowser(platformId)) {
-            operation.setContext({
-                headers: new HttpHeaders().set(
-                    'Authorization',
-                    `Bearer ${localStorage.getItem(AUTH_TOKEN_KEY) || null}`,
-                ),
-            });
+            customHeaders['Authorization'] =  `Bearer ${localStorage.getItem(AUTH_TOKEN_KEY) || null}`
         }
+
+        if(environment.channelToken){
+            customHeaders['vendure-token'] = environment.channelToken
+        }
+
+        operation.setContext(({headers} : {headers: Record<string,string>}) => {
+            return {
+                headers: {
+                    ...headers,
+                    ...customHeaders
+                  }
+            }
+
+          });
         return forward(operation);
     });
 
@@ -150,6 +160,6 @@ export function apolloOptionsFactory(
         cache: apolloCache,
         ssrMode: true,
         ssrForceFetchDelay: 500,
-        link: ApolloLink.from([middleware, afterware, http]),
+        link: from([middleware, afterware, http]),
     };
 }

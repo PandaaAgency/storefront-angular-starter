@@ -71,14 +71,14 @@ export class ModalService {
         const modal = overlayRef.attach(portal);
         setTimeout(() => modal.changeDetectorRef.markForCheck());
 
-        const close$: Observable<R> = new Observable<R>((subscriber) => {
+        const close$ = new Observable<R>((subscriber) => {
             modal.instance.closeModal = (result: R) => {
                 subscriber.next(result);
                 subscriber.complete();
             };
         });
 
-        const backdropClick$: Observable<undefined> = overlayRef.backdropClick().pipe(
+        const backdropClick$ = overlayRef.backdropClick().pipe(
             map(() => undefined)
         );
         return race(close$, backdropClick$).pipe(
